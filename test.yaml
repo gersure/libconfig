@@ -1,0 +1,3 @@
+memtable_flush_static_shares: 10
+cluster_name: test_name
+data_file_directories: [data1, data22, data3]

@@ -1,0 +1,13 @@
+#pragma once
+
+#define EKV_VERSION_MAJOR @EKV_VERSION_MAJOR@
+#define EKV_VERSION_MINOR @EKV_VERSION_MINOR@
+#define EKV_VERSION_FIXED @EKV_VERSION_FIXED@
+#define EKV_GIT_HASH__    @EKV_GIT_HASH@ 
+#define EKV_BUILD_TIME__  @EKV_BUILD_TIME@
+
+#define _vstr_bind(str) #str
+#define vstr_bind(str) _vstr_bind(str)
+
+#define EKV_GIT_HASH	  vstr_bind(EKV_GIT_HASH__)
+#define	EKV_BUILD_TIME    vstr_bind(EKV_BUILD_TIME__) 

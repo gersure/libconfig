@@ -17,7 +17,7 @@
 #include "temporary_buffer.hh"
 
 
-namespace core {
+namespace hamtori {
 
   template <typename char_type, typename Size, Size max_size>
   class basic_sstring;
@@ -374,7 +374,7 @@ namespace core {
 
     template <class InputIterator>
     basic_sstring& replace (const_iterator i1, const_iterator i2,
-                            InputIterator first, InputIterator last) 
+                            InputIterator first, InputIterator last)
     {
       if (i1 < begin() || i1 > end() || i2 < begin()) {
         throw std::out_of_range("sstring::replace out of range");
@@ -646,15 +646,15 @@ operator>>(std::basic_istream<char_type, char_traits>& is,
 
 namespace std {
   template <typename char_type, typename size_type, size_type max_size>
-  struct hash<core::basic_sstring<char_type, size_type, max_size>> {
-    size_t operator()(const core::basic_sstring<char_type, size_type, max_size>& s) const {
+  struct hash<hamtori::basic_sstring<char_type, size_type, max_size>> {
+    size_t operator()(const hamtori::basic_sstring<char_type, size_type, max_size>& s) const {
       return std::hash<std::experimental::basic_string_view<char_type>>()(s);
     }
   };
 
 }
 
-namespace core {
+namespace hamtori {
 
   static inline
   char* copy_str_to(char* dst) {

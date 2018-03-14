@@ -7,7 +7,7 @@
 
 #include "unaligned.hh"
 
-namespace core {
+namespace hamtori {
 
 inline uint64_t ntohq(uint64_t v) {
 #if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__

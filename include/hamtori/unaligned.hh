@@ -25,7 +25,7 @@
 // cause the sanitizer not to generate runtime alignment checks for this
 // access.
 
-namespace core {
+namespace hamtori {
 
 template <typename T>
 struct unaligned {

@@ -1,10 +1,10 @@
 #include "fmt/time.h"
 #include "fmt/printf.h"
 
+#include "hamtori/print.hh"
+#include "hamtori/array_map.hh"
 #include "log.hh"
-#include "print.hh"
 #include "log-cli.hh"
-#include "array_map.hh"
 
 #include <boost/any.hpp>
 #include <boost/lexical_cast.hpp>
@@ -21,7 +21,9 @@
 
 using namespace std::chrono_literals;
 
-namespace core {
+namespace hamtori {
+
+namespace logging {
 
 thread_local uint64_t logging_failures = 0;
 
@@ -281,7 +283,7 @@ void apply_logging_settings(const logging_settings& s) {
             global_logger_registry().set_logger_level(pair.first, pair.second);
         } catch (const std::out_of_range&) {
             throw std::runtime_error(
-                        core::sprint("Unknown logger '%s'. Use --help-loggers to list available loggers.",
+                        hamtori::sprint("Unknown logger '%s'. Use --help-loggers to list available loggers.",
                                         pair.first));
         }
     }
@@ -319,9 +321,10 @@ logger_registry& global_logger_registry() {
 sstring level_name(log_level level) {
     return  log_level_names.at(level);
 }
+} // end logging
 
 namespace log_cli {
-
+using namespace::hamtori::logging;
 namespace bpo = boost::program_options;
 
 log_level parse_log_level(const sstring& s) {
@@ -381,24 +384,25 @@ logging_settings extract_settings(const boost::program_options::variables_map& v
         vars["log-to-syslog"].as<bool>(),
         vars["logger-stdout-timestamps"].as<logger_timestamp_style>()
     };
-
 }
 
-}
+} // end log-cli
 
-}
+} //end hamtori
+
+
 namespace boost {
 template<>
-::core::log_level lexical_cast(const std::string& source) {
+::hamtori::logging::log_level lexical_cast(const std::string& source) {
     std::istringstream in(source);
-    ::core::log_level level;
+    ::hamtori::logging::log_level level;
     if (!(in >> level)) {
         throw boost::bad_lexical_cast();
     }
     return level;
 }
 
-}
+} //end boost
 
 namespace std {
 std::ostream& operator<<(std::ostream& out, const std::exception_ptr& eptr) {
@@ -411,7 +415,7 @@ std::ostream& operator<<(std::ostream& out, const std::exception_ptr& eptr) {
     } catch(...) {
         auto tp = abi::__cxa_current_exception_type();
         if (tp) {
-            out << core::pretty_type_name(*tp);
+            out << hamtori::logging::pretty_type_name(*tp);
         } else {
             // This case shouldn't happen...
             out << "<unknown exception>";
@@ -436,11 +440,11 @@ std::ostream& operator<<(std::ostream& out, const std::exception_ptr& eptr) {
 }
 
 std::ostream& operator<<(std::ostream& out, const std::exception& e) {
-    return out << core::pretty_type_name(typeid(e)) << " (" << e.what() << ")";
+    return out << hamtori::logging::pretty_type_name(typeid(e)) << " (" << e.what() << ")";
 }
 
 std::ostream& operator<<(std::ostream& out, const std::system_error& e) {
-    return out << core::pretty_type_name(typeid(e)) << " (error " << e.code() << ", " << e.code().message() << ")";
+    return out << hamtori::logging::pretty_type_name(typeid(e)) << " (error " << e.code() << ", " << e.code().message() << ")";
 }
 
-}
+} //end std

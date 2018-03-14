@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sstring.hh"
+#include "hamtori/sstring.hh"
 
 #include <boost/any.hpp>
 #include <boost/program_options.hpp>
@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace core {
+namespace hamtori {
 
 namespace program_options {
 ///
@@ -27,9 +27,9 @@ namespace program_options {
 /// containers do not declare virtual destructors.
 ///
 
-class string_map final : private std::unordered_map<core::sstring, core::sstring> {
+class string_map final : private std::unordered_map<hamtori::sstring, hamtori::sstring> {
 private:
-    using base = std::unordered_map<core::sstring, core::sstring>;
+    using base = std::unordered_map<hamtori::sstring, hamtori::sstring>;
 public:
     using base::value_type;
     using base::key_type;
@@ -60,7 +60,7 @@ inline bool operator!=(const string_map& lhs, const string_map& rhs) {
 ///
 /// \brief Query the value of a key in a \c string_map, or a default value if the key doesn't exist.
 ///
-core::sstring get_or_default(const string_map&, const core::sstring& key, const core::sstring& def = core::sstring());
+hamtori::sstring get_or_default(const string_map&, const hamtori::sstring& key, const hamtori::sstring& def = hamtori::sstring());
 
 std::istream& operator>>(std::istream& is, string_map&);
 std::ostream& operator<<(std::ostream& os, const string_map&);

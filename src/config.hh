@@ -4,31 +4,30 @@
 #include <boost/filesystem.hpp>
 #include <unordered_map>
 
-#include <sstring.hh>
-#include <program-options.hh>
-#include <log.hh>
-
+#include "hamtori/sstring.hh"
+#include "log.hh"
 #include "config_file.hh"
+#include "program-options.hh"
 
-namespace core { class file; struct logging_settings; }
+namespace hamtori {
 
-namespace config {
-
-
+//namespace config {
 /*
  * This type is not use, and probably never will be.
  * So it makes sense to jump through hoops just to ensure
  * it is in fact handled properly...
  */
+namespace stdx = std::experimental;
+
 struct seed_provider_type {
     seed_provider_type() = default;
-    seed_provider_type(core::sstring n,
+    seed_provider_type(hamtori::sstring n,
             std::initializer_list<program_options::string_map::value_type> opts =
                     { })
             : class_name(std::move(n)), parameters(std::move(opts)) {
     }
-    core::sstring class_name;
-    std::unordered_map<core::sstring, core::sstring> parameters;
+    hamtori::sstring class_name;
+    std::unordered_map<hamtori::sstring, hamtori::sstring> parameters;
 };
 
 class config : public config_file {
@@ -37,7 +36,7 @@ public:
     ~config();
 
     // Throws exception if experimental feature is disabled.
-    void check_experimental(const core::sstring& what) const;
+    void check_experimental(const hamtori::sstring& what) const;
 
     /**
      * Scans the environment variables for configuration files directory
@@ -49,9 +48,9 @@ public:
      */
     static boost::filesystem::path get_conf_dir();
 
-    using string_map = std::unordered_map<core::sstring, core::sstring>;
+    using string_map = std::unordered_map<hamtori::sstring, hamtori::sstring>;
                     //program_options::string_map;
-    using string_list = std::vector<core::sstring>;
+    using string_list = std::vector<hamtori::sstring>;
     //using seed_provider_type = seed_provider_type;
 
     /*
@@ -97,7 +96,7 @@ public:
     )   \
     /* Initialization properties */             \
     /* The minimal properties needed for configuring a cluster. */  \
-    val(cluster_name, core::sstring, "", Used,   \
+    val(cluster_name, hamtori::sstring, "", Used,   \
             "The name of the cluster; used to prevent machines in one logical cluster from joining another. All nodes participating in a cluster must have the same value."   \
     )                                           \
     val(data_file_directories, string_list, { "/var/lib/scylla/data" }, Used,   \
@@ -110,7 +109,7 @@ public:
 
     _make_config_values(_make_value_member)
 
-    core::logging_settings logging_settings(const boost::program_options::variables_map&) const;
+    hamtori::logging::logging_settings logging_settings(const boost::program_options::variables_map&) const;
 
     boost::program_options::options_description_easy_init&
     add_options(boost::program_options::options_description_easy_init&);
@@ -130,8 +129,8 @@ private:
                         const stdx::string_view&, const stdx::string_view&) override {}
     };
 
-    log_legacy_value<core::log_level> default_log_level;
-    log_legacy_value<std::unordered_map<core::sstring, core::log_level>> logger_log_level;
+    log_legacy_value<hamtori::logging::log_level> default_log_level;
+    log_legacy_value<std::unordered_map<hamtori::sstring, hamtori::logging::log_level>> logger_log_level;
     log_legacy_value<bool> log_to_stdout, log_to_syslog;
 
 };

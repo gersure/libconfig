@@ -50,9 +50,9 @@ SET(CMAKE_BUILD_TYPE DEBUG)
 #SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./bin)
 
 
-#INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 #INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/rpc)
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 #LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/lib)
 #LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY})
 
@@ -61,6 +61,7 @@ INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/src
 )
 #third_party lib 
 #LINK_DIRECTORIES(
@@ -78,11 +79,11 @@ INCLUDE_DIRECTORIES(
 
 ADD_EXECUTABLE(config-test
   main.cc 
-  config.cc
-  config_file.cc
-  log.cc
-  posix.cc
-  program-options.cc
+  src/config.cc
+  src/config_file.cc
+  src/log.cc
+  src/posix.cc
+  src/program-options.cc
  )
 
 #add_dependencies(ekv-server ekvserver_proto ekvps_proto)

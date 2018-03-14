@@ -5,8 +5,7 @@
 #include <boost/program_options.hpp>
 #include <yaml-cpp/yaml.h>
 
-#include "print.hh"
-#include "log.hh"
+#include "hamtori/print.hh"
 
 #include "config.hh"
 #include "log.hh"
@@ -17,34 +16,34 @@ namespace YAML {
 // yaml-cpp conversion would do well to have some enable_if-stuff to make it possible
 // to do more broad spectrum converters.
 template<>
-struct convert<core::log_level> {
-    static bool decode(const Node& node, core::log_level& rhs) {
+struct convert<hamtori::logging::log_level> {
+    static bool decode(const Node& node, hamtori::logging::log_level& rhs) {
         std::string tmp;
         if (!convert<std::string>::decode(node, tmp)) {
             return false;
         }
-        rhs = boost::lexical_cast<core::log_level>(tmp);
+        rhs = boost::lexical_cast<hamtori::logging::log_level>(tmp);
         return true;
     }
 };
 
 template<>
-struct convert<config::seed_provider_type> {
-    static bool decode(const Node& node, config::seed_provider_type& rhs) {
+struct convert<hamtori::seed_provider_type> {
+    static bool decode(const Node& node, hamtori::seed_provider_type& rhs) {
         if (!node.IsSequence()) {
             return false;
         }
-        rhs = config::seed_provider_type();
+        rhs = hamtori::seed_provider_type();
         for (auto& n : node) {
             if (!n.IsMap()) {
                 continue;
             }
             for (auto& n2 : n) {
-                if (n2.first.as<sstring>() == "class_name") {
-                    rhs.class_name = n2.second.as<sstring>();
+                if (n2.first.as<hamtori::sstring>() == "class_name") {
+                    rhs.class_name = n2.second.as<hamtori::sstring>();
                 }
-                if (n2.first.as<sstring>() == "parameters") {
-                  auto v = n2.second.as<std::vector<config::config::string_map>>();
+                if (n2.first.as<hamtori::sstring>() == "parameters") {
+                  auto v = n2.second.as<std::vector<hamtori::config::string_map>>();
                     if (!v.empty()) {
                         rhs.parameters = v.front();
                     }
@@ -55,13 +54,15 @@ struct convert<config::seed_provider_type> {
     }
 };
 
-}
+} //end yaml
 
 #define _mk_name(name, ...) name,
 #define str(x)  #x
 #define _mk_init(name, type, deflt, status, desc, ...)  , name(str(name), type(deflt), desc)
 
-namespace config {
+namespace hamtori {
+
+namespace stdx = std::experimental;
 
 config::config()
     : config::config_file({ _make_config_values(_mk_name)
@@ -91,11 +92,6 @@ void config_file::named_value<seed_provider_type,
                                     [this](auto&&) {_source = config_source::CommandLine;}),
                     desc.data());
 }
-
-}
-
-
-namespace config{
 
 boost::program_options::options_description_easy_init&
 config::add_options(boost::program_options::options_description_easy_init& init) {
@@ -129,17 +125,17 @@ boost::filesystem::path config::get_conf_dir() {
 
 namespace bpo = boost::program_options;
 
-  core::logging_settings config::logging_settings(const bpo::variables_map& map) const {
+  hamtori::logging::logging_settings config::logging_settings(const bpo::variables_map& map) const {
     struct convert {
-        std::unordered_map<sstring, core::log_level> operator()(const core::program_options::string_map& map) const {
-            std::unordered_map<sstring, core::log_level> res;
+        std::unordered_map<sstring, hamtori::logging::log_level> operator()(const hamtori::program_options::string_map& map) const {
+            std::unordered_map<sstring, hamtori::logging::log_level> res;
             for (auto& p : map) {
                 res.emplace(p.first, (*this)(p.second));
             };
             return res;
         }
-        core::log_level operator()(const sstring& s) const {
-            return boost::lexical_cast<core::log_level>(s);
+        hamtori::logging::log_level operator()(const sstring& s) const {
+            return boost::lexical_cast<hamtori::logging::log_level>(s);
         }
         bool operator()(bool b) const {
             return b;
@@ -158,10 +154,10 @@ namespace bpo = boost::program_options;
         return convert()(opt.as<expected>());
     };
 
-    return core::logging_settings{ value(logger_log_level, core::program_options::string_map())
+    return hamtori::logging::logging_settings{ value(logger_log_level, hamtori::program_options::string_map())
         , value(default_log_level, sstring())
         , value(log_to_stdout, bool())
         , value(log_to_syslog, bool())
     };
 }
-}
+} //end hamtori

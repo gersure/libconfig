@@ -1,7 +1,7 @@
 #ifndef LOG_HH_
 #define LOG_HH_
 
-#include "sstring.hh"
+#include "hamtori/sstring.hh"
 #include <unordered_map>
 #include <exception>
 #include <iosfwd>
@@ -10,11 +10,9 @@
 #include <boost/lexical_cast.hpp>
 
 
-/// \addtogroup logging
-/// @{
+namespace hamtori {
 
-namespace core {
-
+namespace logging {
 /// \brief log level used with \see {logger}
 /// used with the logger.do_log method.
 /// Levels are in increasing order. That is if you want to see debug(3) logs you
@@ -30,17 +28,20 @@ enum class log_level {
 
 std::ostream& operator<<(std::ostream& out, log_level level);
 std::istream& operator>>(std::istream& in, log_level& level);
-}
+
+} //end logging
+} //end hamtori
 
 // Boost doesn't auto-deduce the existence of the streaming operators for some reason
 
 namespace boost {
 template<>
-  ::core::log_level lexical_cast(const std::string& source);
+  ::hamtori::logging::log_level lexical_cast(const std::string& source);
 
-}
+} //end boost
 
-namespace core {
+namespace hamtori {
+namespace logging {
 
 class logger;
 class logger_registry;
@@ -49,7 +50,7 @@ class logger_registry;
 ///
 /// Java style api for logging.
 /// \code {.cpp}
-/// static core::logger logger("lsa-api");
+/// static hamtori::logging::logger logger("lsa-api");
 /// logger.info("Triggering compaction");
 /// \endcode
 /// The output format is: (depending on level)
@@ -203,7 +204,7 @@ public:
 /// \brief used to keep a static registry of loggers
 /// since the typical use case is to do:
 /// \code {.cpp}
-/// static core::logger("my_module");
+/// static hamtori::logging::logger("my_module");
 /// \endcode
 /// this class is used to wrap around the static map
 /// that holds pointers to all logs
@@ -294,8 +295,17 @@ logger::do_log(log_level level, const char* fmt, Args&&... args) {
     } (stringer_for<Args>(std::forward<Args>(args))...);
 }
 
-/// \endcond
-} // end core namespace
+
+//inline logger_registry& logger_registry() noexcept {
+//    return global_logger_registry();
+//}
+
+inline void apply_settings(const logging_settings& s) {
+    apply_logging_settings(s);
+}
+
+} // end logging
+} // end hamtori namespace
 
 // Pretty-printer for exceptions to be logged, e.g., std::current_exception().
 namespace std {
@@ -305,4 +315,3 @@ std::ostream& operator<<(std::ostream&, const std::system_error&);
 }
 
 #endif /* LOG_HH_ */
-/// @}

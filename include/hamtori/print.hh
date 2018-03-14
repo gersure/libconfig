@@ -27,7 +27,7 @@ operator<<(std::ostream&& os, const void* ptr) {
     return os << ptr; // selects non-rvalue version
 }
 
-namespace core {
+namespace hamtori {
 
 template <typename... A>
 std::ostream&

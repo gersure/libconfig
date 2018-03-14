@@ -1,8 +1,6 @@
 #ifndef FILE_DESC_HH_
 #define FILE_DESC_HH_
 
-#include "sstring.hh"
-#include "socket_defs.hh"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -24,7 +22,10 @@
 #include <chrono>
 #include <sys/uio.h>
 
-namespace core {
+#include "hamtori/sstring.hh"
+#include "hamtori/socket_defs.hh"
+
+namespace hamtori {
 
 /// \file
 /// \defgroup posix-support POSIX Support

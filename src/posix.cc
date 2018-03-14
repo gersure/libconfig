@@ -1,10 +1,10 @@
 #include <vector>
 #include <sys/mman.h>
 
-#include "posix.hh"
-#include "align.hh"
+#include "hamtori/posix.hh"
+#include "hamtori/align.hh"
 
-namespace core {
+namespace hamtori {
     
 file_desc
 file_desc::temporary(sstring directory) {

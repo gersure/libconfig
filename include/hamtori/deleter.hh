@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <type_traits>
 
-namespace core {
+namespace hamtori {
 
 /// \addtogroup memory-module
 /// @{

@@ -4,11 +4,11 @@
 
 namespace bpo = boost::program_options;
 
-namespace core {
+namespace hamtori {
 
 namespace program_options {
 
-core::sstring get_or_default(const string_map& ss, const core::sstring& key, const core::sstring& def) {
+hamtori::sstring get_or_default(const string_map& ss, const hamtori::sstring& key, const hamtori::sstring& def) {
     const auto iter = ss.find(key);
     if (iter != ss.end()) {
         return iter->second;
@@ -23,10 +23,10 @@ static void parse_map_associations(const std::string& v, string_map& ss) {
     std::sregex_token_iterator s(v.begin(), v.end(), colon, -1);
     const std::sregex_token_iterator e;
     while (s != e) {
-        const core::sstring p = std::string(*s++);
+        const hamtori::sstring p = std::string(*s++);
 
         const auto i = p.find('=');
-        if (i == core::sstring::npos) {
+        if (i == hamtori::sstring::npos) {
             throw bpo::invalid_option_value(p);
         }
 
@@ -71,6 +71,6 @@ std::istream& operator>>(std::istream& is, string_map& ss) {
     return is;
 }
 
-}
+} // end program_options
 
-}
+} // end hamtori

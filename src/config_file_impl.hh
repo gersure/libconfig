@@ -18,8 +18,8 @@ namespace YAML {
  * mainly inf handling etc. Hm.
  */
 template<>
-struct convert<core::sstring> {
-    static bool decode(const Node& node, core::sstring& rhs) {
+struct convert<hamtori::sstring> {
+    static bool decode(const Node& node, hamtori::sstring& rhs) {
         std::string tmp;
         if (!convert<std::string>::decode(node, tmp)) {
             return false;
@@ -45,7 +45,7 @@ struct convert<std::unordered_map<K, V, Rest...>> {
     }
 };
 
-}
+} //end yaml
 
 namespace std {
 
@@ -53,23 +53,23 @@ template<typename K, typename V, typename... Args>
 std::istream& operator>>(std::istream&, std::unordered_map<K, V, Args...>&);
 
 template<>
-std::istream& operator>>(std::istream&, std::unordered_map<core::sstring, core::sstring>&);
+std::istream& operator>>(std::istream&, std::unordered_map<hamtori::sstring, hamtori::sstring>&);
 
 extern template
-std::istream& operator>>(std::istream&, std::unordered_map<core::sstring, core::sstring>&);
+std::istream& operator>>(std::istream&, std::unordered_map<hamtori::sstring, hamtori::sstring>&);
 
 template<typename V, typename... Args>
 std::istream& operator>>(std::istream&, std::vector<V, Args...>&);
 
 template<>
-std::istream& operator>>(std::istream&, std::vector<core::sstring>&);
+std::istream& operator>>(std::istream&, std::vector<hamtori::sstring>&);
 
 extern template
-std::istream& operator>>(std::istream&, std::vector<core::sstring>&);
+std::istream& operator>>(std::istream&, std::vector<hamtori::sstring>&);
 
 template<typename K, typename V, typename... Args>
 std::istream& operator>>(std::istream& is, std::unordered_map<K, V, Args...>& map) {
-    std::unordered_map<core::sstring, core::sstring> tmp;
+    std::unordered_map<hamtori::sstring, hamtori::sstring> tmp;
     is >> tmp;
 
     for (auto& p : tmp) {
@@ -80,7 +80,7 @@ std::istream& operator>>(std::istream& is, std::unordered_map<K, V, Args...>& ma
 
 template<typename V, typename... Args>
 std::istream& operator>>(std::istream& is, std::vector<V, Args...>& dst) {
-    std::vector<core::sstring> tmp;
+    std::vector<hamtori::sstring> tmp;
     is >> tmp;
     for (auto& v : tmp) {
         dst.emplace_back(boost::lexical_cast<V>(v));
@@ -115,14 +115,14 @@ void validate(boost::any& out, const std::vector<std::string>& in, std::unordere
                 ve = s.begin() + i->position();
             }
 
-            (*p)[boost::lexical_cast<K>(k)] = boost::lexical_cast<V>(core::sstring(vs, ve));
+            (*p)[boost::lexical_cast<K>(k)] = boost::lexical_cast<V>(hamtori::sstring(vs, ve));
         }
     }
 }
 
-}
+} //end std
 
-namespace config {
+namespace hamtori {
 
 namespace {
 
@@ -159,12 +159,12 @@ inline typed_value_ex<std::vector<T>>* value_ex(std::vector<T>* v) {
 
 }
 
-core::sstring hyphenate(const stdx::string_view&);
+hamtori::sstring hyphenate(const stdx::string_view&);
 
-}
+} //end hamtori
 
-template<typename T, config::config_file::value_status S>
-void config::config_file::named_value<T, S>::add_command_line_option(
+template<typename T, hamtori::config_file::value_status S>
+void hamtori::config_file::named_value<T, S>::add_command_line_option(
                 boost::program_options::options_description_easy_init& init,
                 const stdx::string_view& name, const stdx::string_view& desc) {
     // NOTE. We are not adding default values. We could, but must in that case manually (in some way) geenrate the textual
@@ -173,8 +173,8 @@ void config::config_file::named_value<T, S>::add_command_line_option(
     init(hyphenate(name).data(), value_ex(&_value)->notifier([this](auto&&) { _source = config_source::CommandLine; }), desc.data());
 }
 
-template<typename T, config::config_file::value_status S>
-void config::config_file::named_value<T, S>::set_value(const YAML::Node& node) {
+template<typename T, hamtori::config_file::value_status S>
+void hamtori::config_file::named_value<T, S>::set_value(const YAML::Node& node) {
     (*this)(node.as<T>());
     _source = config_source::SettingsFile;
 }

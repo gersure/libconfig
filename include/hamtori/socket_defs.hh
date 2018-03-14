@@ -5,7 +5,7 @@
 #include <netinet/ip.h>
 #include "byteorder.hh"
 
-namespace core {
+namespace hamtori {
 
 struct ipv4_addr;
 

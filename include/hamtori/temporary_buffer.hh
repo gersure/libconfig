@@ -5,7 +5,7 @@
 #include <malloc.h>
 #include <algorithm>
 
-namespace core {
+namespace hamtori {
 
 /// \addtogroup memory-module
 /// @{

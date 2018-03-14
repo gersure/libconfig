@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-namespace core {
+namespace hamtori {
 
 template <typename T>
 inline constexpr

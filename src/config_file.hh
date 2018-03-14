@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 zcf
- */
- 
 #pragma once
 
 #include <unordered_map>
@@ -12,21 +8,18 @@
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 
-#include "sstring.hh"
+#include "hamtori/sstring.hh"
 
-#include "stdx.hh"
-
-namespace core { class file; }
 namespace YAML { class Node; }
-
-namespace config {
 
 namespace bpo = boost::program_options;
 
+namespace hamtori {
+namespace stdx = std::experimental;
 class config_file {
 public:
-    typedef std::unordered_map<core::sstring, core::sstring> string_map;
-    typedef std::vector<core::sstring> string_list;
+    typedef std::unordered_map<hamtori::sstring, hamtori::sstring> string_map;
+    typedef std::vector<hamtori::sstring> string_list;
 
     enum class value_status {
         Used,
@@ -137,11 +130,11 @@ public:
      * If invalid, it is invalid. Otherwise, a parse error.
      *
      */
-     using error_handler = std::function<void(const core::sstring&, const core::sstring&, boost::optional<value_status>)>;
+     using error_handler = std::function<void(const hamtori::sstring&, const hamtori::sstring&, boost::optional<value_status>)>;
 
-    void read_from_yaml(const core::sstring&, error_handler = {});
+    void read_from_yaml(const hamtori::sstring&, error_handler = {});
     void read_from_yaml(const char *, error_handler = {});
-    void read_from_file(const core::sstring&, error_handler = {});
+    void read_from_file(const hamtori::sstring&, error_handler = {});
     //void read_from_file(file, error_handler = {});
 
     using configs = std::vector<cfg_ref>;

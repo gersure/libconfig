@@ -3,7 +3,7 @@
 
 #include <array>
 
-namespace core {
+namespace hamtori {
 
 // unordered_map implemented as a simple array
 

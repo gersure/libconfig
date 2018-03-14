@@ -172,41 +172,45 @@ std::istream& std::operator>>(std::istream& is, std::vector<hamtori::sstring>& r
 }
 template std::istream& std::operator>>(std::istream&, std::unordered_map<hamtori::sstring, hamtori::sstring>&);
 
-hamtori::sstring hamtori::hyphenate(const stdx::string_view& v) {
+namespace hamtori {
+namespace appconfig {
+
+hamtori::sstring hyphenate(const stdx::string_view& v) {
     hamtori::sstring result(v.begin(), v.end());
     std::replace(result.begin(), result.end(), '_', '-');
     return result;
 }
 
-hamtori::config_file::config_file(std::initializer_list<cfg_ref> cfgs)
+
+config_file::config_file(std::initializer_list<cfg_ref> cfgs)
     : _cfgs(cfgs)
 {}
 
-void hamtori::config_file::add(cfg_ref cfg) {
+void config_file::add(cfg_ref cfg) {
     _cfgs.emplace_back(cfg);
 }
 
-void hamtori::config_file::add(std::initializer_list<cfg_ref> cfgs) {
+void config_file::add(std::initializer_list<cfg_ref> cfgs) {
     _cfgs.insert(_cfgs.end(), cfgs.begin(), cfgs.end());
 }
 
-bpo::options_description hamtori::config_file::get_options_description() {
+bpo::options_description config_file::get_options_description() {
     bpo::options_description opts("");
     return get_options_description(opts);
 }
 
-bpo::options_description hamtori::config_file::get_options_description(boost::program_options::options_description opts) {
+bpo::options_description config_file::get_options_description(boost::program_options::options_description opts) {
     auto init = opts.add_options();
     add_options(init);
     return std::move(opts);
 }
 
 bpo::options_description_easy_init&
-hamtori::config_file::add_options(bpo::options_description_easy_init& init) {
+config_file::add_options(bpo::options_description_easy_init& init) {
     for (config_src& src : _cfgs) {
         if (src.status() == value_status::Used) {
             auto&& name = src.name();
-            hamtori::sstring tmp(name.begin(), name.end());
+            sstring tmp(name.begin(), name.end());
             std::replace(tmp.begin(), tmp.end(), '_', '-');
             src.add_command_line_option(init, tmp, src.desc());
         }
@@ -214,12 +218,12 @@ hamtori::config_file::add_options(bpo::options_description_easy_init& init) {
     return init;
 }
 
-void hamtori::config_file::read_from_yaml(const hamtori::sstring& yaml, error_handler h) {
+void config_file::read_from_yaml(const sstring& yaml, error_handler h) {
     read_from_yaml(yaml.c_str(), std::move(h));
 }
 
-void hamtori::config_file::read_from_yaml(const char* yaml, error_handler h) {
-    std::unordered_map<hamtori::sstring, cfg_ref> values;
+void config_file::read_from_yaml(const char* yaml, error_handler h) {
+    std::unordered_map<sstring, cfg_ref> values;
 
     if (!h) {
         h = [](auto & opt, auto & msg, auto) {
@@ -235,7 +239,7 @@ void hamtori::config_file::read_from_yaml(const char* yaml, error_handler h) {
      */
     auto doc = YAML::Load(yaml);
     for (auto node : doc) {
-        auto label = node.first.as<hamtori::sstring>();
+        auto label = node.first.as<sstring>();
 
         auto i = std::find_if(_cfgs.begin(), _cfgs.end(), [&label](const config_src& cfg) { return cfg.name() == label; });
         if (i == _cfgs.end()) {
@@ -271,13 +275,13 @@ void hamtori::config_file::read_from_yaml(const char* yaml, error_handler h) {
     }
 }
 
-hamtori::config_file::configs hamtori::config_file::set_values() const {
+config_file::configs config_file::set_values() const {
     return boost::copy_range<configs>(_cfgs | boost::adaptors::filtered([] (const config_src& cfg) {
         return cfg.status() > value_status::Used || cfg.source() > config_source::None;
     }));
 }
 
-hamtori::config_file::configs hamtori::config_file::unset_values() const {
+config_file::configs config_file::unset_values() const {
     configs res;
     for (config_src& cfg : _cfgs) {
         if (cfg.status() > value_status::Used) {
@@ -292,12 +296,13 @@ hamtori::config_file::configs hamtori::config_file::unset_values() const {
 }
 
 
-void hamtori::config_file::read_from_file(const hamtori::sstring& filename, error_handler h) {
-  hamtori::file_desc file = hamtori::file_desc::open( filename, O_RDONLY);
-  hamtori::temporary_buffer<char> buf(file.size()+1);
+void config_file::read_from_file(const sstring& filename, error_handler h) {
+  file_desc file = file_desc::open( filename, O_RDONLY);
+  temporary_buffer<char> buf(file.size()+1);
   file.read(buf.get_write(), file.size());
   read_from_yaml(sstring(buf.get(), buf.size()), h);
 }
 
-
+} //end appconfig
+} //end hamtori
 

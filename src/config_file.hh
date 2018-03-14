@@ -15,6 +15,8 @@ namespace YAML { class Node; }
 namespace bpo = boost::program_options;
 
 namespace hamtori {
+namespace appconfig {
+
 namespace stdx = std::experimental;
 class config_file {
 public:
@@ -146,5 +148,6 @@ private:
         _cfgs;
 };
 
-}
+} //appconfig
+} //hamtori
 

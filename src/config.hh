@@ -11,7 +11,7 @@
 
 namespace hamtori {
 
-//namespace config {
+namespace appconfig {
 /*
  * This type is not use, and probably never will be.
  * So it makes sense to jump through hoops just to ensure
@@ -135,4 +135,5 @@ private:
 
 };
 
-}
+} //appconfig
+} // hamtori

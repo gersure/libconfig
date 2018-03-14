@@ -124,6 +124,7 @@ void validate(boost::any& out, const std::vector<std::string>& in, std::unordere
 
 namespace hamtori {
 
+namespace appconfig {
 namespace {
 
 /*
@@ -156,15 +157,15 @@ inline typed_value_ex<std::vector<T>>* value_ex(std::vector<T>* v) {
     r->multitoken();
     return r;
 }
-
-}
+} //end null namespace
 
 hamtori::sstring hyphenate(const stdx::string_view&);
 
+} //end appconfig
 } //end hamtori
 
-template<typename T, hamtori::config_file::value_status S>
-void hamtori::config_file::named_value<T, S>::add_command_line_option(
+template<typename T, hamtori::appconfig::config_file::value_status S>
+void hamtori::appconfig::config_file::named_value<T, S>::add_command_line_option(
                 boost::program_options::options_description_easy_init& init,
                 const stdx::string_view& name, const stdx::string_view& desc) {
     // NOTE. We are not adding default values. We could, but must in that case manually (in some way) geenrate the textual
@@ -173,8 +174,8 @@ void hamtori::config_file::named_value<T, S>::add_command_line_option(
     init(hyphenate(name).data(), value_ex(&_value)->notifier([this](auto&&) { _source = config_source::CommandLine; }), desc.data());
 }
 
-template<typename T, hamtori::config_file::value_status S>
-void hamtori::config_file::named_value<T, S>::set_value(const YAML::Node& node) {
+template<typename T, hamtori::appconfig::config_file::value_status S>
+void hamtori::appconfig::config_file::named_value<T, S>::set_value(const YAML::Node& node) {
     (*this)(node.as<T>());
     _source = config_source::SettingsFile;
 }

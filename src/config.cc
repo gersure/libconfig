@@ -28,12 +28,12 @@ struct convert<hamtori::logging::log_level> {
 };
 
 template<>
-struct convert<hamtori::seed_provider_type> {
-    static bool decode(const Node& node, hamtori::seed_provider_type& rhs) {
+struct convert<hamtori::appconfig::seed_provider_type> {
+    static bool decode(const Node& node, hamtori::appconfig::seed_provider_type& rhs) {
         if (!node.IsSequence()) {
             return false;
         }
-        rhs = hamtori::seed_provider_type();
+        rhs = hamtori::appconfig::seed_provider_type();
         for (auto& n : node) {
             if (!n.IsMap()) {
                 continue;
@@ -43,7 +43,7 @@ struct convert<hamtori::seed_provider_type> {
                     rhs.class_name = n2.second.as<hamtori::sstring>();
                 }
                 if (n2.first.as<hamtori::sstring>() == "parameters") {
-                  auto v = n2.second.as<std::vector<hamtori::config::string_map>>();
+                  auto v = n2.second.as<std::vector<hamtori::appconfig::config::string_map>>();
                     if (!v.empty()) {
                         rhs.parameters = v.front();
                     }
@@ -62,7 +62,7 @@ struct convert<hamtori::seed_provider_type> {
 
 namespace hamtori {
 
-namespace stdx = std::experimental;
+namespace appconfig {
 
 config::config()
     : config::config_file({ _make_config_values(_mk_name)
@@ -160,4 +160,5 @@ namespace bpo = boost::program_options;
         , value(log_to_syslog, bool())
     };
 }
+} //end appconfig
 } //end hamtori

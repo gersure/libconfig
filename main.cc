@@ -6,7 +6,7 @@
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    hamtori::config conf;
+    hamtori::appconfig::config conf;
     conf.read_from_file("test.yaml");
     hamtori::logging::logger log("test");
 

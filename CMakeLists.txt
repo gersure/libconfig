@@ -36,7 +36,7 @@ configure_file (
 #  VERBATIM )
 #add_custom_target(ekvps_proto DEPENDS ps.pb.cc ps.pb.h ps.grpc.pb.h ps.grpc.pb.cc)
 
-set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_COMPILER "g++7")
 #SET(CMAKE_CXX_FLAGS "-std=c++11 -lc++experimental")
 SET(CMAKE_CXX_FLAGS "-std=c++14")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
@@ -60,12 +60,13 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 #third_party include 
 INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}
-  ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/fmt/include
 )
 #third_party lib 
-#LINK_DIRECTORIES(
-#  ${THIRD_PARTH_DIR}/phxpaxos/lib)
+LINK_DIRECTORIES(
+    ${PROJECT_SOURCE_DIR}/fmt/lib)
 
 
 #获得一个目录下所有源文件（不包括头文件）到变量SRCS
@@ -83,6 +84,7 @@ ADD_EXECUTABLE(config-test
   src/config_file.cc
   src/log.cc
   src/posix.cc
+  src/backtrace.cc
   src/program-options.cc
  )
 

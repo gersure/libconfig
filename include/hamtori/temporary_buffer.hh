@@ -1,5 +1,4 @@
-#ifndef TEMPORARY_BUFFER_HH_
-#define TEMPORARY_BUFFER_HH_
+#pragma once
 
 #include "deleter.hh"
 #include <malloc.h>
@@ -81,7 +80,7 @@ public:
     }
     void operator=(const temporary_buffer&) = delete;
     /// Moves a \c temporary_buffer.
-    temporary_buffer& operator=(temporary_buffer&& x) {
+    temporary_buffer& operator=(temporary_buffer&& x) noexcept {
         if (this != &x) {
             _buffer = x._buffer;
             _size = x._size;
@@ -143,6 +142,12 @@ public:
         ret._size = len;
         return ret;
     }
+    /// Clone the current \c temporary_buffer object into a new one.
+    /// This creates a temporary buffer with the same length and data but not
+    /// pointing to the memory of the original object.
+    temporary_buffer clone() const {
+        return {_buffer, _size};
+    }
     /// Remove a prefix from the buffer.  The underlying data
     /// is not modified.
     ///
@@ -200,6 +205,6 @@ public:
     }
 };
 
-}
+/// @}
 
-#endif /* TEMPORARY_BUFFER_HH_ */
+}

@@ -3,8 +3,8 @@
 
 #include "hamtori/print.hh"
 #include "hamtori/array_map.hh"
-#include "log.hh"
-#include "log-cli.hh"
+#include "hamtori/log.hh"
+#include "hamtori/log-cli.hh"
 
 #include <boost/any.hpp>
 #include <boost/lexical_cast.hpp>

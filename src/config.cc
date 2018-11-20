@@ -7,8 +7,8 @@
 
 #include "hamtori/print.hh"
 
-#include "config.hh"
-#include "log.hh"
+#include "hamtori/config.hh"
+#include "hamtori/log.hh"
 #include "config_file_impl.hh"
 
 namespace YAML {

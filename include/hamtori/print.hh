@@ -1,9 +1,7 @@
-#ifndef PRINT_HH_
-#define PRINT_HH_
+#pragma once
 
 #include <fmt/ostream.h>
 #include <fmt/printf.h>
-#include <fmt/format.h>
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -113,9 +111,17 @@ log(A&&... a) {
 template <typename... A>
 sstring
 format(const char* fmt, A&&... a) {
-    fmt::MemoryWriter out;
-    out.write(fmt, std::forward<A>(a)...);
+    fmt::memory_buffer out;
+    fmt::format_to(out, fmt, std::forward<A>(a)...);
     return sstring{out.data(), out.size()};
 }
+
+// temporary, use fmt::print() instead
+template <typename... A>
+std::ostream&
+fmt_print(std::ostream& os, const char* format, A&&... a) {
+    fmt::print(os, format, std::forward<A>(a)...);
+    return os;
 }
-#endif /* PRINT_HH_ */
+
+}

@@ -1,5 +1,4 @@
-#ifndef DELETER_HH_
-#define DELETER_HH_
+#pragma once
 
 #include <memory>
 #include <cstdlib>
@@ -46,7 +45,7 @@ public:
     /// \endcond
     /// Destroys the deleter and carries out the encapsulated action.
     ~deleter();
-    deleter& operator=(deleter&& x);
+    deleter& operator=(deleter&& x) noexcept;
     deleter& operator=(deleter&) = delete;
     /// Performs a sharing operation.  The encapsulated action will only
     /// be carried out after both the original deleter and the returned
@@ -107,7 +106,7 @@ deleter::~deleter() {
 }
 
 inline
-deleter& deleter::operator=(deleter&& x) {
+deleter& deleter::operator=(deleter&& x) noexcept {
     if (this != &x) {
         this->~deleter();
         new (this) deleter(std::move(x));
@@ -254,5 +253,3 @@ make_object_deleter(deleter d, T&& obj) {
 /// @}
 
 }
-
-#endif /* DELETER_HH_ */

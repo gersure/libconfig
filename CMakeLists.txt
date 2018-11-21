@@ -1,7 +1,7 @@
 #cmake file for ev server
 #author changfa.zheng
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1.0)
 
 
 #project name
@@ -22,6 +22,9 @@ configure_file (
 		"${PROJECT_BINARY_DIR}/version.h"
 		)
 
+
+add_subdirectory(fmt)
+
 #add_custom_command(OUTPUT  ekv.pb.h ekv.pb.cc ekv.grpc.pb.h ekv.grpc.pb.cc
 #  COMMAND ${PROTOBUF_PATH}/bin/protoc ARGS --cpp_out . ${CMAKE_CURRENT_SOURCE_DIR}/ekv.proto -I${CMAKE_CURRENT_SOURCE_DIR}
 #  COMMAND ${PROTOBUF_PATH}/bin/protoc ARGS --grpc_out . --plugin=protoc-gen-grpc=${THIRD_PARTH_DIR}/grpc/bin/grpc_cpp_plugin ${CMAKE_CURRENT_SOURCE_DIR}/ekv.proto -I${CMAKE_CURRENT_SOURCE_DIR}
@@ -36,7 +39,7 @@ configure_file (
 #  VERBATIM )
 #add_custom_target(ekvps_proto DEPENDS ps.pb.cc ps.pb.h ps.grpc.pb.h ps.grpc.pb.cc)
 
-set(CMAKE_CXX_COMPILER "g++7")
+set(CMAKE_CXX_COMPILER "g++")
 #SET(CMAKE_CXX_FLAGS "-std=c++11 -lc++experimental")
 SET(CMAKE_CXX_FLAGS "-std=c++14")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
@@ -66,7 +69,7 @@ INCLUDE_DIRECTORIES(
 )
 #third_party lib 
 LINK_DIRECTORIES(
-    ${PROJECT_SOURCE_DIR}/fmt/lib)
+    ${PROJECT_BINARY_DIR}/fmt)
 
 
 #获得一个目录下所有源文件（不包括头文件）到变量SRCS
@@ -88,14 +91,13 @@ ADD_EXECUTABLE(config-test
   src/program-options.cc
  )
 
-#add_dependencies(ekv-server ekvserver_proto ekvps_proto)
-#add_dependencies(ekv-client ekvserver_proto ekvps_proto)
+add_dependencies(config-test fmt)
 
 #依赖的库文件
 
 TARGET_LINK_LIBRARIES(config-test
   -lboost_program_options -lboost_system -lboost_filesystem
-  -lfmt
   -lyaml-cpp
-  -lpthread)
+  -lpthread
+  libfmt.a)
 

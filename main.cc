@@ -1,7 +1,15 @@
 #include "hamtori/config.hh"
 #include "hamtori/log.hh"
+#include "hamtori/backtrace.hh"
+#include "hamtori/backtrace_buff.hh"
 #include <iostream>
+#include <exception>
 
+void test_func(int i)
+{
+    if(i<10)
+        hamtori::throw_with_backtrace<std::runtime_error>("888888888");
+}
 
 
 int main(int argc, const char * argv[]) {
@@ -21,8 +29,9 @@ int main(int argc, const char * argv[]) {
     log.debug("debug log test:{}",3);
     std::cout<<conf.get_options_description();
     std::cout<<conf.data_file_directories()<<std::endl;
+    test_func(1);
     }catch(std::exception &e){
-        std::cout<<"Execption: "<<e.what()<<std::endl;
+        //std::cout<<"Execption: "<<e.what()<<std::endl;
     }
     return 0;
 }
